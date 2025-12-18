@@ -389,11 +389,13 @@ function generateCalendar() {
     const currentMonth = today.getMonth();
     
     // For demonstration, if it's December, use actual date; otherwise, show all days as available
-    const isDecember = currentMonth === 11; // December is month 11 (0-indexed)
+    // December is month 11 (0-indexed) - only lock days in December, otherwise show all days for demo
+    const isDecember = currentMonth === 11;
     
     for (let day = 1; day <= 25; day++) {
         const dayElement = document.createElement('div');
         dayElement.className = 'calendar-day';
+        dayElement.setAttribute('data-day', day);
         
         // Check if day should be locked
         const isLocked = isDecember && day > currentDay;
@@ -446,10 +448,10 @@ function openDay(day) {
         // Mark as opened
         localStorage.setItem(`day-${day}`, 'opened');
         
-        // Update the calendar day appearance
-        const calendarDays = document.querySelectorAll('.calendar-day');
-        if (calendarDays[day - 1]) {
-            calendarDays[day - 1].classList.add('opened');
+        // Update the calendar day appearance using data attribute
+        const dayElement = document.querySelector(`.calendar-day[data-day="${day}"]`);
+        if (dayElement) {
+            dayElement.classList.add('opened');
         }
     }
 }
@@ -463,7 +465,8 @@ function closeModal() {
 // Create snowflakes
 function createSnowflakes() {
     const snow = document.getElementById('snow');
-    const numberOfFlakes = 50;
+    // Adjust number of snowflakes based on screen size for better performance
+    const numberOfFlakes = window.innerWidth < 768 ? 30 : 50;
     
     for (let i = 0; i < numberOfFlakes; i++) {
         const snowflake = document.createElement('div');
